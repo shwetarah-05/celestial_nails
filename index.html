@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Celestial Nails</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+/* VIDEO BACKGROUND */
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* PAGE CONTENT */
+.content {
+    background: rgba(0,0,0,0.55);
+    color: white;
+}
+
+/* HERO */
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: rgb(60, 128, 106);             /* fill color */
+    -webkit-text-stroke: 2px rgb(68, 3, 3); /* border/outline color and thickness */
+    text-align: center;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: olive;
+    border-color: black;
+}
+
+/* PRODUCT CARDS */
+.card {
+    border-radius: 15px;
+    color: black;
+    cursor: pointer;
+    overflow: hidden;
+}
+.nail-img {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.card:hover .nail-img {
+    transform: scale(1.1);
+}
+
+/* CONTACT */
+#contact {
+    background: transparent;
+}
+
+/* FOOTER */
+footer {
+    background: rgba(0,0,0,0.7);
+}
+
+/* NAVBAR SEARCH & CART */
+.navbar .form-control {
+    width: 150px;
+}
+.navbar .btn-outline-light {
+    transition: all 0.3s;
+}
+.navbar .btn-outline-light:hover {
+    background-color: rgba(216, 27, 96, 0.6);
+    color: white;
+    border-color: white;
+}
+
+#cart-count {
+    font-size: 0.8rem;
+    vertical-align: top;
+    margin-left: 5px;
+}
+</style>
+</head>
+
+<body>
+  <script>
+// If no one is logged in, send to signup page
+if(!localStorage.getItem("userLoggedIn")){
+    window.location.href = "signup.html";
+}
+</script>
+
+<button id="logout-btn" class="btn btn-outline-light ms-3">Logout</button>
+
+<script>
+document.getElementById("logout-btn").addEventListener("click", () => {
+    localStorage.removeItem("userLoggedIn");
+    window.location.href = "signup.html";
+});
+</script>
+
+
+<!-- VIDEO -->
+<video autoplay muted loop id="bg-video">
+    <source src="nail1.mp4" type="video/mp4">
+</video>
+
+<div class="content">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<div class="container">
+    <a class="navbar-brand fw-bold text-warning" href="#">✨ Celestial Nails</a>
+
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto align-items-center">
+
+            <!-- SEARCH -->
+            <li class="nav-item">
+                <form class="d-flex" id="search-form">
+                    <input class="form-control me-2" id="search-input" placeholder="Search nails">
+                    <button class="btn btn-outline-light">Search</button>
+                </form>
+            </li>
+
+            <!-- CART -->
+            <li class="nav-item ms-3">
+                <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#cartModal">
+                    🛒 Bag <span class="badge bg-danger" id="cart-count">0</span>
+                </button>
+            </li>
+
+        </ul>
+    </div>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero text-center py-5">
+    <h1>Welcome to Shraaa's...Celestial</h1>
+    <p class="mt-3">Luxury nails, effortless beauty</p>
+</section>
+
+<!-- PRODUCTS -->
+<section class="container my-5">
+<h2 class="text-center mb-4">Our Nail Designs</h2>
+<div class="row" id="product-list"></div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="text-center py-5">
+    <h2>Contact Us</h2>
+    <p>Book your nails easily</p>
+    <a href="tel:+919930651414" class="btn btn-light m-2">Call</a>
+    <a href="https://wa.me/919930651414" class="btn btn-outline-light m-2">WhatsApp</a>
+</section>
+
+<footer class="text-center py-3">
+    © 2026 Celestial Nails
+</footer>
+
+</div>
+
+<!-- CART MODAL -->
+<div class="modal fade" id="cartModal">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+    <div class="modal-header">
+        <h5>Your Bag</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body" id="cart-items">
+</div>
+
+<div class="modal-footer d-block">
+    <p>Subtotal: ₹<span id="subtotal">0</span></p>
+    <p>Tax (18%): ₹<span id="tax">0</span></p>
+    <p>Shipping: ₹<span id="shipping">99</span></p>
+    <h5>Total: ₹<span id="total">0</span></h5>
+</div>
+
+</div>
+</div>
+</div>
+<script>
+// Redirect if not logged in
+if(!localStorage.getItem("userLoggedIn")){
+    window.location.href = "login.html";
+}
+</script>
+
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal fade" id="productDetailModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="detail-name"></h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="detail-img" src="" class="img-fluid mb-3" style="max-height:300px;">
+        <p id="detail-price" class="fw-bold"></p>
+        <p id="detail-description" class="mt-2"></p>
+        <button class="btn btn-dark" id="detail-add-to-bag">Add to Bag</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<script>
+/* PRODUCTS DATA */
+const products = [
+  {name:"French Nails", price:999, img:"nails2.jpeg", description:"Elegant French manicure with glossy finish."},
+  {name:"Cat Eye Nails", price:1299, img:"nails3.jpeg", description:"Shimmering cat-eye design that changes in light."},
+  {name:"Glitter Nails", price:1499, img:"nails4.jpeg", description:"Sparkly glitter nails, long-lasting and durable."},
+  {name:"Chrome Nails", price:1699, img:"cateye1.jpg", description:"Chrome finish nails with mirror-like shine."},
+  {name:"Bridal Nails", price:2499, img:"bridal1.jpg", description:"Beautiful bridal nail designs, perfect for weddings."}
+];
+
+/* LOAD PRODUCTS */
+const productList = document.getElementById("product-list");
+
+products.forEach((p,i) => {
+  productList.innerHTML += `
+    <div class="col-md-4 mb-4 product-card" data-index="${i}">
+      <div class="card">
+        <img src="${p.img}" class="card-img-top nail-img">
+        <div class="card-body text-center">
+          <h5>${p.name}</h5>
+          <p>₹${p.price}</p>
+          <button class="btn btn-outline-dark add-to-bag" data-index="${i}">Add to Bag</button>
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+/* CART */
+let cart = [];
+const cartCount = document.getElementById("cart-count");
+const cartItems = document.getElementById("cart-items");
+
+// ADD TO CART
+document.addEventListener("click", e => {
+  if(e.target.classList.contains("add-to-bag") || e.target.id=="detail-add-to-bag") {
+    const index = e.target.dataset.index;
+    const product = products[index];
+    cart.push(product);
+    renderCart();
+    fetch("https://script.google.com/macros/s/AKfycbxbdAQlJyOAIeDLj2TUSS2-gdI5U-JuJfZA7fAzvl0HxmcCNGNStNGiOj1bn3TW0Bk1/exec", {
+  method: "POST",
+  body: JSON.stringify({
+    username: localStorage.getItem("username"),
+    product: product.name,
+    price: product.price
+  })
+});
+
+  }
+
+  // REMOVE FROM CART
+  if (e.target.classList.contains("remove-item")) {
+    const index = e.target.dataset.index;
+    cart.splice(index, 1); // remove item
+    renderCart();
+  }
+});
+
+function renderCart() {
+  if (cart.length === 0) {
+    cartItems.innerHTML = "<p>Your bag is empty.</p>";
+    cartCount.innerText = 0;
+
+    document.getElementById("subtotal").innerText = 0;
+    document.getElementById("tax").innerText = 0;
+    document.getElementById("shipping").innerText = 0;
+    document.getElementById("total").innerText = 0;
+    return;
+  }
+
+  let subtotal = 0;
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    subtotal += item.price;
+
+    cartItems.innerHTML += `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span>${item.name} – ₹${item.price}</span>
+        <button class="btn btn-sm btn-danger remove-item" data-index="${i}">❌</button>
+      </div>
+    `;
+  });
+
+  const tax = Math.round(subtotal * 0.18);
+  const shipping = 99;
+  const total = subtotal + tax + shipping;
+
+  document.getElementById("subtotal").innerText = subtotal;
+  document.getElementById("tax").innerText = tax;
+  document.getElementById("shipping").innerText = shipping;
+  document.getElementById("total").innerText = total;
+
+  cartCount.innerText = cart.length;
+}
+
+
+/* SEARCH */
+document.getElementById("search-form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const value = document.getElementById("search-input").value.toLowerCase();
+  document.querySelectorAll(".product-card").forEach(card=>{
+    const title = card.querySelector("h5").innerText.toLowerCase();
+    card.style.display = title.includes(value) ? "block" : "none";
+  });
+});
+
+/* PRODUCT DETAIL MODAL */
+document.querySelectorAll(".product-card").forEach(card=>{
+  card.addEventListener("click", e=>{
+    if(e.target.classList.contains("add-to-bag")) return;
+    const index = card.dataset.index;
+    const product = products[index];
+
+    document.getElementById("detail-name").innerText = product.name;
+    document.getElementById("detail-img").src = product.img;
+    document.getElementById("detail-price").innerText = `₹${product.price}`;
+    document.getElementById("detail-description").innerText = product.description;
+    document.getElementById("detail-add-to-bag").dataset.index = index;
+
+    const modal = new bootstrap.Modal(document.getElementById("productDetailModal"));
+    modal.show();
+  });
+});
+</script>
+</body>
+</html>
